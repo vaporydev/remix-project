@@ -30,11 +30,13 @@ class ContractDropdownUI {
       contractNames.innerHTML = ''
       if (success) {
         this.selectContractNames.removeAttribute('disabled')
+        this.atAddress.removeAttribute('disabled')
         this.dropdownLogic.getCompiledContracts(compiler, compilerFullName).forEach((contract) => {
           contractNames.appendChild(yo`<option value="${contract.name}" compiler="${compilerFullName}">${contract.name} - ${contract.file}</option>`)
         })
       } else {
         this.selectContractNames.setAttribute('disabled', true)
+        this.atAddress.setAttribute('disabled', true)
       }
       this.setInputParamsPlaceHolder()
 
@@ -147,7 +149,9 @@ class ContractDropdownUI {
     if (!this.atAddressButtonInput.value) {
       this.atAddress.setAttribute('disabled', 'true')
     } else {
-      this.atAddress.removeAttribute('disabled')
+      if (this.selectContractNames && !this.selectContractNames.getAttribute('disabled')) {
+        this.atAddress.removeAttribute('disabled')
+      }
     }
   }
 
@@ -160,6 +164,7 @@ class ContractDropdownUI {
       this.compFails.style.display = 'none'
       contractNames.appendChild(yo`<option>(abi)</option>`)
       this.selectContractNames.setAttribute('disabled', true)
+      this.atAddress.setAttribute('disabled', true)
     } else if (/.(.sol)$/.exec(currentFile)) {
       this.createPanel.style.display = 'block'
       this.orLabel.style.display = 'block'
