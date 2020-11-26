@@ -38,6 +38,7 @@ import * as program from 'commander'
     console.log('\x1b[33m%s\x1b[0m', '[WARN] Any application that runs on your computer can potentially read from and write to all files in the directory.')
     console.log('\x1b[33m%s\x1b[0m', '[WARN] Symbolic links are not forwarded to Remix IDE\n')
     try {
+      // shared folder
       const sharedFolderClient = new servicesList.Sharedfolder()
       const websocketHandler = new WebSocket(65520, { remixIdeUrl: program.remixIde }, sharedFolderClient)
 
@@ -47,6 +48,16 @@ import * as program from 'commander'
         sharedFolderClient.sharedFolder(program.sharedFolder, program.readOnly || false)
       })
       killCallBack.push(websocketHandler.close.bind(websocketHandler))
+
+      // git
+      const gitClient = new servicesList.GitClient()
+      const websocketHandlerForGit = new WebSocket(65521, { remixIdeUrl: program.remixIde }, gitClient)
+
+      websocketHandlerForGit.start((ws: WS) => {
+        gitClient.setWebSocket(ws)
+        gitClient.sharedFolder(program.sharedFolder, program.readOnly || false)
+      })
+      killCallBack.push(websocketHandlerForGit.close.bind(websocketHandlerForGit))
     } catch (error) {
       throw new Error(error)
     }

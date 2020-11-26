@@ -384,7 +384,8 @@ Please make a backup of your contracts and start using http://remix.ethereum.org
     debug,
     analysis,
     test,
-    filePanel.remixdHandle
+    filePanel.remixdHandle,
+    filePanel.gitHandle
   ])
 
   try {
